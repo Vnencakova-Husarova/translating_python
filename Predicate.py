@@ -1,8 +1,15 @@
 class Predicate:
+    _atomicPredicates = None
+    _atomicComparisons = None
+    _atributes = None
+
     def __init__(self, name, atributes):
-        self._neg = None
+        self._neg = False
         self._name = name
         self._atributes.extend(atributes)
+
+    def __init__(self, name):
+        self._name = name
 
     def negate(self):
         self._neg = True
