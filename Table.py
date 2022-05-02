@@ -3,8 +3,8 @@ class Table:
         self._name = name
         self._columns.extend(columns)
 
-    def getName(self):
+    def get_name(self):
         return self._name
 
-    def getColumn(self, i):
+    def get_column(self, i):
         return self._columns[i]

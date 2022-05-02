@@ -33,7 +33,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(verification.checkNeg(), True)
 
     def test_safety(self):
-        tables = {}
+        tables = {'predicate1', 'predicate2', 'predicate3'}
         verification = Verification(tables)
         predicate = Predicate('predicate')
         atributes = ['A', 'V']
@@ -41,24 +41,20 @@ class MyTestCase(unittest.TestCase):
         predicate2 = Predicate('predicate2')
         atributes1 = ['A', 'A']
         atributes2 = ['A', 'C']
-        predicate.addAtributes(atributes)
-        predicate1.addAtributes(atributes1)
-        predicate2.addAtributes(atributes2)
-        predicate.addAtomicPredicate(predicate1)
-        verification.setPredicate(predicate)
-        self.assertEqual(verification.checkSafety(), False)
+        predicate.add_atributes(atributes)
+        predicate1.add_atributes(atributes1)
+        predicate2.add_atributes(atributes2)
+        predicate.add_atomic_predicate(predicate1)
+        verification.set_predicate(predicate)
+        self.assertEqual(verification.check_safety(), False)
         predicate3 = Predicate('predicate3')
         atributes3 = ['A', 'V']
-        predicate3.addAtributes(atributes3)
-        predicate.addAtomicPredicate(predicate3)
-        self.assertEqual(verification.checkSafety(), True)
-        predicate.addAtomicPredicate(predicate2)
+        predicate3.add_atributes(atributes3)
+        predicate.add_atomic_predicate(predicate3)
+        self.assertEqual(verification.check_safety(), True)
+        predicate.add_atomic_predicate(predicate2)
         predicate2.negate()
-        self.assertEqual(verification.checkSafety(), False)
-
-
-
-
+        self.assertEqual(verification.check_safety(), False)
 
 
 if __name__ == '__main__':

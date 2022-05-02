@@ -16,10 +16,10 @@ class CreateDatabase:
              self._instance = Database(tables)
         return self._instance
 
-    def addTable(self, table):
+    def add_table(self, table):
         table.update(table)
 
-    def getTable(self, name):
+    def get_table(self, name):
         for t in self._tables:
             if t._name == name: return t
         return None

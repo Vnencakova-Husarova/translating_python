@@ -4,36 +4,36 @@ class Predicate:
     def __init__(self, name):
         self._name = name
         self._neg = False
-        self._atomicPredicates = []
-        self._atomicComparisons = []
+        self._atomic_predicates = []
+        self._atomic_comparisons = []
         self._atributes = []
 
     def negate(self):
         self._neg = True
 
-    def addAtribute(self, atribute):
+    def add_atribute(self, atribute):
         self._atributes.append(atribute)
 
-    def addAtributes(self, atributes):
+    def add_atributes(self, atributes):
         self._atributes.extend(atributes)
 
-    def addAtomicPredicate(self, predicate):
-        self._atomicPredicates.append(predicate)
+    def add_atomic_predicate(self, predicate):
+        self._atomic_predicates.append(predicate)
 
-    def addComparison(self, comparison):
-        self._atomicComparisons.append(comparison)
+    def add_comparison(self, comparison):
+        self._atomic_comparisons.append(comparison)
 
-    def checkNeg(self, verification):
-        verification.setPredicate(self)
-        return verification.checkNeg()
+    def check_neg(self, verification):
+        verification.set_predicate(self)
+        return verification.check_neg()
 
-    def checkWhole(self, verification):
-        verification.setPredicate(self)
-        return verification.checkNotRecursive() and verification.checkSafety()
+    def check_whole(self, verification):
+        verification.set_predicate(self)
+        return verification.check_not_recursive() and verification.check_safety()
 
-    def containsAtribute(self, atribute):
+    def contains_atribute(self, atribute):
         return atribute in self._atributes
 
-    def indexOf(self, atribute):
+    def index_of(self, atribute):
         return self._atributes.index(atribute)
 

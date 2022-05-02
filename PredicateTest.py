@@ -9,15 +9,15 @@ class MyTestCase(unittest.TestCase):
         atributesNew = ['A', 'B', 'C', 'D']
 
         predicate = Predicate('predicate1')
-        predicate.addAtributes(atributes)
-        predicate.addAtribute('D')
+        predicate.add_atributes(atributes)
+        predicate.add_atribute('D')
 
         self.assertEqual(predicate._atributes, atributesNew)
         self.assertEqual(predicate._neg, False)
         predicate.negate()
         self.assertEqual(predicate._neg, True)
-        self.assertEqual(predicate.indexOf('A'), 0)
-        self.assertEqual(predicate.indexOf('C'), 2)
+        self.assertEqual(predicate.index_of('A'), 0)
+        self.assertEqual(predicate.index_of('C'), 2)
 
 
 if __name__ == '__main__':

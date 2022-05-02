@@ -1,48 +1,72 @@
 class Verification:
-    _tablesSet = {}  # set stringov
+    _tables_set = set()  # set stringov
 
     def __init__(self, tables):
         self._predicate = []
-        self._tablesSet.update(tables)
+        self._tables_set.update(tables)
 
-    def setPredicate(self, predicate):
+    def set_predicate(self, predicate):
         self._predicate = predicate
 
-    def checkNeg(self):
-        if self._predicate._neg and self._predicate.containsAtribute('_'): return False
+    def check_neg(self):
+        if self._predicate._neg and self._predicate.contains_atribute('_'):
+            return False
         return True
 
-    def checkNotRecursive(self):
-        tmp = self._predicate._atomicPredicates
+    def check_not_recursive(self):
+        tmp = self._predicate._atomic_predicates
         for p in tmp:
-            if p._name == self._predicate._name: return False
+            if p._name == self._predicate._name:
+                return False
 
         return True
 
-    def checkSafety(self):
-        positiveAtributesSet = {}  # overujem ci negativne boli najskor spomenute v pozitivnom vyzname
-        numberOccurenceDic = {}  # overujem ci boli atributy spomenute aspon raz aj v druhej casti
+    def check_safety(self):
+        positive_atributes_set = set()  # overujem ci negativne boli najskor spomenute v pozitivnom vyzname
+        number_occurence = {}  # overujem ci boli atributy spomenute aspon raz aj v druhej casti
 
         for a in self._predicate._atributes:
-            numberOccurenceDic[a] = 0
+            number_occurence[a] = 0
 
-        tmpVerification = Verification(self._tablesSet);
+        tmp_verification = Verification(self._tables_set)
 
-        for p in self._predicate._atomicPredicates:
-            if (not p.checkNeg(tmpVerification)) or not (p._name in self._tablesSet): return False;
+        for p in self._predicate._atomic_predicates:
+            if (not p.check_neg(tmp_verification)) or not (p._name in self._tables_set):
+                return False;
 
             for a in p._atributes:
-                if a in numberOccurenceDic:
-                    numberOccurenceDic[a] += 1
+                if a in number_occurence:
+                    number_occurence[a] += 1
                 else:
-                    numberOccurenceDic[a] = 0
+                    number_occurence[a] = 0
 
                 if not p._neg:
-                    positiveAtributesSet.add(a)
+                    positive_atributes_set.add(a)
                 else:
-                    if not a in positiveAtributesSet: return False
+                    if not a in positive_atributes_set:
+                        return False
 
         for a in self._predicate._atributes:
-            if numberOccurenceDic[a] == 0: return False
+            if number_occurence[a] == 0:
+                return False
 
-            # doriesit overovanie conditions
+        for c in self._predicate._atomic_comparisons:
+            if c._first in number_occurence:
+                number_occurence[c._first] += 1
+
+            else:
+                number_occurence[c._first] = 0
+
+            if not c.is_second_int:
+                if c._second in number_occurence:
+                    number_occurence[c._second] += 1
+
+                else:
+                    number_occurence[c._second] = 0
+
+        for a in number_occurence.values():
+            if a == 0:
+                return Exception('PREMENNA IBA RAZ')
+
+        return True
+        # doriesit overovanie conditions
