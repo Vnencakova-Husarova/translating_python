@@ -1,32 +1,36 @@
+from Predicate import Predicate
+import inspect
+
 class Parser:
     i = 0
-    _string = ''
-    WRONG = -4
+    _charsPredicate = '-_qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM'
+    _charsAtribute = 'QWERTZUIOPASDFGHJKLYXCVBNM'
 
     def __init__(self, string):
         self._string = string
-        self._charsPredicate = '-_qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM'
-        self._charsAtribute = 'QWERTZUIOPASDFGHJKLYXCVBNM'
+
 
     def spaces(self):
-        while self.i < self._string.length() and self._string[self.i] == ' ':
+        while self.i < len(self._string) and self._string[self.i] == ' ':
             self.i += 1
 
     def negation(self):
         if self._string[self.i] == '\\':
             self.i += 1
+            self.spaces()
             if self._string[self.i] == '+':
                 self.i += 1
                 self.spaces()
                 return True
             else:
-                return self.WRONG
+                return Exception('negacia')
         else:
             return False
 
     def readName(self, charSet):
+        self.spaces()
         name = ''
-        while self.i < self._string.length() and \
+        while self.i < len(self._string) and \
                 self._string[self.i] in charSet:
             name += self._string[self.i]
             self.i += 1
@@ -34,6 +38,7 @@ class Parser:
         return name
 
     def readPredicate(self, neg, newP):
+        self.spaces()
         name = self.readName(self._charsPredicate)
         self.spaces()
 
@@ -50,7 +55,7 @@ class Parser:
         self.spaces()
         tmp = False
 
-        while self.i < self._string.length() and self._string[self.i] != ')':
+        while self.i < len(self._string) and self._string[self.i] != ')':
             if tmp:
                 if self._string[self.i] != ',': return None
                 self.i += 1
@@ -59,7 +64,7 @@ class Parser:
             if self._string[self.i] == '\'':
                 self.i += 1
                 con = ''
-                while self.i < self._string.length() and self._string[self.i] != '\'':
+                while self.i < len(self._string) and self._string[self.i] != '\'':
                     con += self._string[self.i]
                     self.i += 1
                 self.i += 1
@@ -69,7 +74,7 @@ class Parser:
                 result.addAtribute('_')
                 self.i += 1
 
-            elif self._string[self.i] < 65 or self._string[self.i] > 90 or self._string[self.i] == '_':
+            elif self._string[self.i] < 'A' or self._string[self.i] > 'Z' or self._string[self.i] == '_':
                 return None
 
             else:
@@ -77,17 +82,69 @@ class Parser:
 
             self.spaces()
             tmp = True
-
+        self.i += 1
+        self.spaces()
         return result
 
+    #doriesit, domysliet
+    def readCondition(self, neg):
+        return None
 
     def readNext(self):
         tmp = self.negation()
+        self.spaces()
+        if isinstance(tmp, Exception): return Exception('negacia')
 
-        if tmp == self.WRONG: return self.WRONG
+        if 'a' <= self._string[self.i] <= 'z':
+            return self.readPredicate(tmp, False)
 
-        if 97 <= self._string[self.i] <= 122:
-            self.readPredicate(tmp, False)
+        if 'A' <= self._string[self.i] <= 'Z':
+            return self.readCondition(tmp)
 
-        if 65 <= self._string[self.i] <= 90:
-            self.readCondition(tmp)
+
+
+    def parseLine(self):
+        self.spaces()
+        predicate = self.readPredicate(False, True)
+        self.spaces()
+
+        if predicate is None: return None
+
+        if self._string[self.i] == ':':
+            self.i += 1
+            self.spaces()
+
+            if self._string[self.i] == '-':
+                self.i += 1
+                self.spaces()
+            else: return None
+
+        tmp = False
+        while self.i < len(self._string) and self._string[self.i] != '.':
+            self.spaces()
+            if tmp:
+                if self._string[self.i] != ',': return None
+                self.i += 1
+                self.spaces()
+
+            next = self.readNext()
+
+            if next is None: return None
+            if isinstance(next, Predicate): predicate.addAtomicPredicate(next)
+            else: predicate.addComparison(next)
+            tmp = True
+
+        if self.i == len(self._string) : return None
+        self.i += 1
+
+        return predicate
+
+    def parse(self):
+        predicates = []
+        while self.i < len(self._string) :
+            tmp = self.parseLine()
+            self.spaces()
+            if tmp == None: return None
+    #        if self._string[self.i] < 'a' or self._string[self.i] > 'z': return None
+            predicates.append(tmp)
+        return predicates

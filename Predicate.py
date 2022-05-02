@@ -1,27 +1,27 @@
 class Predicate:
-    _atomicPredicates = None
-    _atomicComparisons = None
-    _atributes = None
 
-    def __init__(self, name, atributes):
-        self._neg = False
-        self._name = name
-        self._atributes.extend(atributes)
-
+#name, atributes alebo atributes
     def __init__(self, name):
         self._name = name
+        self._neg = False
+        self._atomicPredicates = []
+        self._atomicComparisons = []
+        self._atributes = []
 
     def negate(self):
         self._neg = True
 
     def addAtribute(self, atribute):
-        self._atributes.extend(atribute)
+        self._atributes.append(atribute)
+
+    def addAtributes(self, atributes):
+        self._atributes.extend(atributes)
 
     def addAtomicPredicate(self, predicate):
-        self._atomicPredicates.extend(predicate)
+        self._atomicPredicates.append(predicate)
 
     def addComparison(self, comparison):
-        self._atomicComparisons.extend(comparison)
+        self._atomicComparisons.append(comparison)
 
     def checkNeg(self, verification):
         verification.setPredicate(self)
