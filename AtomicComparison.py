@@ -7,7 +7,7 @@ class AtomicComparison:
         self._second = second
         self._operator = operator
 
-    def toString(self):
+    def to_string(self):
         string = self._first + " " + self._operator + " " + self._second
         return string
 

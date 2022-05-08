@@ -1,7 +1,7 @@
 class Table:
     def __init__(self, name, columns):
         self._name = name
-        self._columns.extend(columns)
+        self._columns = columns
 
     def get_name(self):
         return self._name

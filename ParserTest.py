@@ -2,7 +2,6 @@ import unittest
 
 from Parser import Parser
 
-
 class MyTestCase(unittest.TestCase):
     def test_spaces(self):
         parser = Parser('    a  ')
@@ -50,10 +49,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(com2._second, '50')
 
 
-
-
-
-
     def test_readLine(self):
         parser = Parser('p(A, B) :- pred(A, C), r(A, C).')
         predicate = parser.parse_line()
@@ -83,8 +78,6 @@ class MyTestCase(unittest.TestCase):
                         's(D) :- p(A, _), pred(A, C), r(A, C)')
         listOfPredicates2 = parser2.parse()
         self.assertEqual(listOfPredicates2, None)
-
-
 
 if __name__ == '__main__':
     unittest.main()
