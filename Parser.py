@@ -10,6 +10,7 @@ class Parser:
 
     def __init__(self, string):
         self._string = string
+        self._problem = ''
 
     def spaces(self):
         while self.i < len(self._string) and self._string[self.i] == ' ':

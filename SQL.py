@@ -19,7 +19,11 @@ class SQL:
         _where = ''
 
         tmp = False
-        _main += 'CREATE TEMPORARY TABLE ' + predicate._name + ' AS '
+
+        if predicate._name in self._database._temporary_tables_names:
+            _main+= 'DROP TABLE ' + predicate._name + '; \n'
+
+        _main += 'CREATE TABLE ' + predicate._name + ' AS '
         columns = []
 
         #domysliet ci netreba premenovavat stlpceky v pomocnych, ako tvorit nove tabulky
@@ -128,11 +132,12 @@ class SQL:
         _select += _from + _where + _negation + ';'
         _main += _select
 
-        self._database.add_table(Table(predicate._name, columns))
+        self._database.add_temporary_table(Table(predicate._name, columns))
         return _main
 
+    def translate(self):
+        return None
 
-
-
+#nezabudnut odstranit po konci dotazu vsetky pomocne tabulky
 
 

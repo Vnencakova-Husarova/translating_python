@@ -1,15 +1,18 @@
 class Verification:
     _tables_set = set()  # set stringov
 
+
     def __init__(self, tables):
         self._predicate = []
         self._tables_set.update(tables)
+        self._problem = ''
 
     def set_predicate(self, predicate):
         self._predicate = predicate
 
     def check_neg(self):
         if self._predicate._neg and self._predicate.contains_atribute('_'):
+            self._problem = 'NEGOVANÝ PREDIKÁT OBSAHUJE VOĽNÚ PREMENNÚ'
             return False
         return True
 
@@ -17,6 +20,7 @@ class Verification:
         tmp = self._predicate._atomic_predicates
         for p in tmp:
             if p._name == self._predicate._name:
+                self._problem = 'REKURZIA'
                 return False
 
         return True
@@ -24,15 +28,21 @@ class Verification:
     def check_safety(self):
         positive_atributes_set = set()  # overujem ci negativne boli najskor spomenute v pozitivnom vyzname
         number_occurence = {}  # overujem ci boli atributy spomenute aspon raz aj v druhej casti
+        self._problem = ''
 
         for a in self._predicate._atributes:
             number_occurence[a] = 0
 
         tmp_verification = Verification(self._tables_set)
 
+        if not self.check_not_recursive():
+            return False
+
         for p in self._predicate._atomic_predicates:
             if (not p.check_neg(tmp_verification)) or not (p._name in self._tables_set):
-                return False;
+                if not self._problem == '':
+                    self._problem = 'POUŽITÝ NEZNÁMY PREDIKÁT'
+                return False
 
             for a in p._atributes:
                 if a in number_occurence:
@@ -44,10 +54,12 @@ class Verification:
                     positive_atributes_set.add(a)
                 else:
                     if not a in positive_atributes_set:
+                        self._problem = 'ATRIBÚT NEBOL NAJSKÔR V POZITÍVNOM KONTEXTE'
                         return False
 
         for a in self._predicate._atributes:
             if number_occurence[a] == 0:
+                self._problem = 'NESPOMENUTÝ ATRIBÚT'
                 return False
 
         for c in self._predicate._atomic_comparisons:
@@ -66,7 +78,11 @@ class Verification:
 
         for a in number_occurence.values():
             if a == 0:
-                return Exception('PREMENNA IBA RAZ')
+                self._problem = 'PREMENNA IBA RAZ'
+                return False
 
         return True
         # doriesit overovanie conditions
+
+    def get_problem(self):
+        return self._problem
