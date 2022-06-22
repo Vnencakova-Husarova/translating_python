@@ -3,14 +3,9 @@ from Table import Table
 
 
 class SQL:
-    def __init__(self, string, database):
-        self._string = string
+    def __init__(self, predicates, database):
         self._database = database
-        self._predicates = []
-
-    def parse(self):
-        parser = Parser(self._string)
-        self._predicates = parser.parse()
+        self._predicates = predicates
 
     def translate_one(self, predicate):
         _main = ''
@@ -21,7 +16,7 @@ class SQL:
         tmp = False
 
         if predicate._name in self._database._temporary_tables_names:
-            _main+= 'DROP TABLE ' + predicate._name + '; \n'
+            _main+= ' DROP TABLE ' + predicate._name + '; \n'
 
         _main += 'CREATE TABLE ' + predicate._name + ' AS '
         columns = []
@@ -129,15 +124,26 @@ class SQL:
 
             _negation += ' ) '
 
-        _select += _from + _where + _negation + ';'
+        if _where == '\n WHERE ':
+            _where = ''
+
+        _select += _from + _where + _negation + '; '
         _main += _select
 
         self._database.add_temporary_table(Table(predicate._name, columns))
         return _main
 
-    def translate(self):
-        return None
+    def translate_all(self):
+        result = ''
+        for predicate in self._predicates:
+            result += self.translate_one(predicate)
 
-#nezabudnut odstranit po konci dotazu vsetky pomocne tabulky
+        result += '\n SELECT * FROM ' + self._predicates[-1]._name + ' ; '
+        return result
+
+    def write_one(self, predicate):
+        result = '\n SELECT * FROM ' + predicate._name + ' ;'
+        return result
+
 
 

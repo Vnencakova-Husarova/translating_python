@@ -1,11 +1,12 @@
 class Verification:
-    _tables_set = set()  # set stringov
-
+    _tables_set = set()
+    _tables_original = set()
 
     def __init__(self, tables):
         self._predicate = []
+        self._tables_original.update(tables)
         self._tables_set.update(tables)
-        self._problem = ''
+        self._problem = 'OK'
 
     def set_predicate(self, predicate):
         self._predicate = predicate
@@ -28,7 +29,10 @@ class Verification:
     def check_safety(self):
         positive_atributes_set = set()  # overujem ci negativne boli najskor spomenute v pozitivnom vyzname
         number_occurence = {}  # overujem ci boli atributy spomenute aspon raz aj v druhej casti
-        self._problem = ''
+
+        if self._predicate._name in self._tables_original:
+            self._problem = 'PREDEFINOVANIE HOTOVÉHO PREDIKÁTU'
+            return False
 
         for a in self._predicate._atributes:
             number_occurence[a] = 0
@@ -39,9 +43,13 @@ class Verification:
             return False
 
         for p in self._predicate._atomic_predicates:
-            if (not p.check_neg(tmp_verification)) or not (p._name in self._tables_set):
-                if not self._problem == '':
-                    self._problem = 'POUŽITÝ NEZNÁMY PREDIKÁT'
+
+            if not p.check_neg(tmp_verification):
+                self._problem = 'NEGOVANÝ PREDIKÁT OBSAHUJE VOĽNÚ PREMENNÚ'
+                return False
+
+            if not p._name in self._tables_set:
+                self._problem = 'POUŽITÝ NEZNÁMY PREDIKÁT'
                 return False
 
             for a in p._atributes:
@@ -78,11 +86,12 @@ class Verification:
 
         for a in number_occurence.values():
             if a == 0:
-                self._problem = 'PREMENNA IBA RAZ'
+                self._problem = 'PREMENNÁ IBA RAZ'
                 return False
 
+        #overuje aj vzhladom na predosle
+        self._tables_set.add(self._predicate._name)
         return True
-        # doriesit overovanie conditions
 
     def get_problem(self):
         return self._problem

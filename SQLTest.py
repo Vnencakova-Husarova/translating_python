@@ -19,8 +19,8 @@ class MyTestCase(unittest.TestCase):
         tmp = database.get_database()
         sql = SQL('', tmp)
 
-        predicate = parser.parse_line()
-        predicate2 = parser2.parse_line()
+        predicate = parser._parse_line()
+        predicate2 = parser2._parse_line()
         print(sql.translate_one(predicate) + '\n')
         print(sql.translate_one(predicate2) + '\n')
 

@@ -33,35 +33,35 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(predicate3._name, 'predicateA')
         self.assertEqual(predicate3._neg, True)
         parser4 = Parser('\+ p(A, B)')
-        predicate4 = parser4.read_next()
+        predicate4 = parser4._read_next()
         self.assertEqual(predicate4._name, 'p')
         self.assertEqual(predicate4._neg, True)
         self.assertEqual(predicate4._atributes, ['A', 'B'])
 
     def test_readCond(self):
         parser = Parser('A = B')
-        comparison = parser.read_condition(False)
+        comparison = parser._read_condition(False)
         self.assertEqual(comparison.is_second_int(), False)
         self.assertEqual(comparison._second, 'B')
         parser1 = Parser('A = 50')
-        com2 = parser1.read_condition(False)
+        com2 = parser1._read_condition(False)
         self.assertEqual(com2.is_second_int(), True)
         self.assertEqual(com2._second, '50')
 
 
     def test_readLine(self):
         parser = Parser('p(A, B) :- pred(A, C), r(A, C).')
-        predicate = parser.parse_line()
+        predicate = parser._parse_line()
         self.assertEqual(predicate._name, 'p')
         self.assertEqual(predicate._atributes, ['A', 'B'])
         self.assertEqual(len(predicate._atomic_predicates), 2)
         self.assertEqual(predicate._atomic_predicates[1]._name, 'r')
         self.assertEqual(predicate._atomic_predicates[0]._atributes, ['A', 'C'])
         parser1 = Parser('p(A, _) :- pred(A, C), r(A, C).')
-        predicate1 = parser1.parse_line()
+        predicate1 = parser1._parse_line()
         self.assertEqual(predicate1, None)
         parser2 = Parser('p(A) :-- pred(A, C), r(A, C).')
-        predicate2 = parser2.parse_line()
+        predicate2 = parser2._parse_line()
         self.assertEqual(predicate2, None)
 
     def test_parse(self):
