@@ -5,8 +5,9 @@ from Table import Table
 from Verification import Verification
 
 
+
 def main():
-    from_text_window = 'aaaabbbb(B, C) : - pristupova_karta(B, C).'
+    from_text_window = 'aaaabbbb(A, B) : - pristupova_karta(A, B).'
     parser = Parser(from_text_window)
     array_of_predicates = parser.parse()
     if array_of_predicates is None:
@@ -19,7 +20,7 @@ def main():
     verification = Verification(tmp_set)
 
     for predicate in array_of_predicates:
-        predicate.check_whole(verification)
+        ok = predicate.check_whole(verification)
         print(verification.get_problem())
 
     tables = {Table('student', ['id', 'meno', 'priezvisko', 'rocnik', 'nickname']),
@@ -34,11 +35,11 @@ def main():
               Table('miestnost_pocitac', ['id_miestnosti', 'id_pocitaca']),
               Table('historia_vyhladavania', ['id_uzivatel', 'predmet_vyhladavania', 'cas'])}
 
-    database = Database(tables)
-    sql = SQL(array_of_predicates, database)
-    result_to_sql = sql.translate_all()
-    print(result_to_sql)
-
+    if ok:
+        database = Database(tables)
+        sql = SQL(array_of_predicates, database)
+        result_to_sql = sql.translate_all()
+        print(result_to_sql)
 
 if __name__ == "__main__":
     main()

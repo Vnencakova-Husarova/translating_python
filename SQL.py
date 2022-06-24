@@ -18,7 +18,7 @@ class SQL:
         if predicate._name in self._database._temporary_tables_names:
             _main+= ' DROP TABLE ' + predicate._name + '; \n'
 
-        _main += 'CREATE TABLE ' + predicate._name + ' AS '
+        _main += 'CREATE TABLE ' + predicate._name + ' AS ('
         columns = []
 
         #domysliet ci netreba premenovavat stlpceky v pomocnych, ako tvorit nove tabulky
@@ -127,7 +127,7 @@ class SQL:
         if _where == '\n WHERE ':
             _where = ''
 
-        _select += _from + _where + _negation + '; '
+        _select += _from + _where + _negation + '); '
         _main += _select
 
         self._database.add_temporary_table(Table(predicate._name, columns))
