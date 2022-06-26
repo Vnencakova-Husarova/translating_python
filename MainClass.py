@@ -7,7 +7,8 @@ from Verification import Verification
 
 
 def main():
-    from_text_window = 'aaaabbbb(A, B) : - pristupova_karta(A, B).'
+    from_text_window = str(input())
+
     parser = Parser(from_text_window)
     array_of_predicates = parser.parse()
     if array_of_predicates is None:
